@@ -4,6 +4,8 @@ const Enmap = require("enmap");
 const config = require('./config.json')
 const server = new Enmap({name: "server", autoFetch: true, fetchAll: false});
 const embeds = new Enmap({name: "embeds", autoFetch: true, fetchAll: false});
+const spam = new Map;
+const poll = new Map;
 const urlRegEx = new RegExp(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi)
 client.once('ready', () => {
   console.log('READY TO CHEW.');
@@ -39,7 +41,7 @@ switch(command.toLowerCase()) {
      }else {return msg.channel.send('Insufficient Permissions')}
     break;
     case 'create':
-      if(msg.member.hasPermission('ADMINISTRATOR')){
+      try{if(msg.member.hasPermission('ADMINISTRATOR')){
         if(args.length <= 1) return msg.channel.send('Warn: Missing Arguments, must be greater than 2')
         if(args[0].length > 32) return msg.channel.send('Warn: Name Argument must be shorter than 32 characters')
         const name = args.shift();
@@ -99,9 +101,11 @@ switch(command.toLowerCase()) {
                 }
                 if(v[loc[i][b+2]+1] == '>'){
                   var sv = v.substring(loc[i][b+2]+2,loc[i][b+3])
+                  if(sv == 'true'){
                 }else{
                   var sv = 'false'
                 }
+              }
                 field.push({name:n,value:fv,inline:sv})
               break;
               case 'b':
@@ -121,7 +125,6 @@ switch(command.toLowerCase()) {
               break;
               case 'i':
                 if(!urlRegEx.match(n)){return msg.channel.send(`Warn: Invalid Url here: ${v.substring(loc[i][b+0],loc[i][b+1])}`)}
-
                 e.image = {url:n}
               break;
               case 'a':
@@ -148,8 +151,10 @@ switch(command.toLowerCase()) {
           package.push(e)
         }
         embeds.set(`${msg.guild.id}:${name}`,package)
-        
-        return 
+        }
+
+      }catch(e){
+        return msg.channel.send(`There's been an error: ${e}`)
         // +f means field   +t means title   +c means colour   +< means value   +d means description   +u means url   +a means author
         // +i means image   +b means footer   +> means second value  += means next embed
       }
@@ -191,8 +196,51 @@ switch(command.toLowerCase()) {
       return msg.channel.send(`Successfully deleted ${args[0]} msgs!`)
       }
     break;
+    case 'poll':
+      if(spam.get(msg.member.id)){
+        var x = spam.get(msg.member.id)
+        if(x['poll']){
+          var t = (Date.now() - x['poll'])
+          if(t < 60){
+            return msg.channel.send(`You cannot poll for another ${60 - t}s`)
+          }else{
+            delete x['poll']
+          }
+        }else{
+          x['poll'] = Date.now()
+        }
+      }
+      if(!msg.member.hasPermission('ADMINISTRATOR')){
+        spam.set(msg.member.id,{'poll':Date.now()})
+      }
+      var k = new Discord.MessageEmbed;
+      k.setDescription(args.join(' '))
+      k.setColor('#2667ff')
+      
+    
+      msg.channel.send(k).then((m)=>{
+        
+      })
+      return poll.set(msg.id,{'up':[],'down':[]})
+    break;
     default: 
       if(embeds.has(`${msg.guild.id}:${command}`)){
+        if(spam.get(msg.member.id)){
+          var x = spam.get(msg.member.id)
+          if(x['embed']){
+            var t = (Date.now() - x['embed'])
+            if(t < 60){
+              return msg.channel.send(`You cannot poll for another ${60 - t}s`)
+            }else{
+              delete x['embed']
+            }
+          }else{
+            x['embed'] = Date.now()
+          }
+        }
+        if(!msg.member.hasPermission('ADMINISTRATOR')){
+          spam.set(msg.member.id,{'embed':Date.now()})
+        }
         const package = embeds.get(`${msg.guild.id}:${command}`)
         for(var x=0;x<package.length;x++){
            var embed = new Discord.MessageEmbed;
@@ -203,7 +251,6 @@ switch(command.toLowerCase()) {
               embed[Object.keys(package[x])[b]] = package[x][Object.keys(package[x])[b]]
              }
            }
-           
            msg.channel.send(embed)
         }
       }else{
@@ -213,6 +260,12 @@ switch(command.toLowerCase()) {
 return
 });
 
+client.on("messageReactionAdd", (reaction,user) => {
+  console.log(reaction.users.reaction)
+  if(poll.get(reaction.message.id)){
+    
+  }
+})
 client.on('guildCreate', guild => {
  //updated to enmap
  if(!server.has(guild.id)){
