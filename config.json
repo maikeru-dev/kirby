@@ -1,0 +1,35 @@
+{
+    "spamtimeout":"300",
+    "status":
+    [
+        {"name":"Mongolian throat singing","type":"LISTENING"},
+        {"name":"Minecraft","type":"PLAYING"},
+        {"name":"SAO","type":"STREAMING","url":"https://github.com/maikeru-dev/"},
+        {"name":"Taytay","type":"LISTENING"},
+        {"name":"with Retards","type":"PLAYING"},
+        {"name":"cat videos","type":"STREAMING","url":"https://github.com/maikeru-dev/"},
+        {"name":"Kanye East","type":"LISTENING"},
+        {"name":"SAO","type":"PLAYING"},
+        {"name":"gameplay","type":"STREAMING","url":"https://github.com/maikeru-dev/"},
+        {"name":"rap","type":"LISTENING"},
+        {"name":"with fire","type":"PLAYING"},
+        {"name":"Luigi's Mansion Retro Ringtone","type":"LISTENING"},
+        {"name":"with water","type":"PLAYING"},
+        {"name":"intellectuals speak","type":"LISTENING"},
+        {"name":"deez nuts","type":"PLAYING"},
+        {"name":"sick beats","type":"LISTENING"},
+        {"name":"big chungus online","type":"PLAYING"},
+        {"name":"Mario vs Sonic Beat Box Battle","type":"LISTENING"}
+    ],
+    "statusTime":"3600",
+    "penaltyMSGs":
+    [
+        "bruh...",
+        "stop.",
+        "this is a bad joke",
+        "go away stinky",
+        "you are an idiot",
+        "i hate you"
+    ]
+
+}

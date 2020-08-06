@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const Enmap = require("enmap");
-const config = require('./config.json')
+const config = require('./config.json'), secret = require('./secret.json')
 const server = new Enmap({name: "server", autoFetch: true, fetchAll: false});
 const embeds = new Enmap({name: "embeds", autoFetch: true, fetchAll: false});
 const spam = new Map;
@@ -9,21 +9,59 @@ const poll = new Map;
 const urlRegEx = new RegExp(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi)
 client.once('ready', () => {
   console.log('READY TO CHEW.');
+  function hourly(){
+    server.set('statusMsgIndex',server.get('statusMsgIndex')+1)
+    if(server.get('statusMsgIndex') >= config.status.length){
+      server.set('statusMsgIndex', 0)
+    }
+    var o = server.get('statusMsgIndex')
+    client.user.setPresence({
+      status: 'online',
+      activity: {
+          name: config.status[o].name,
+          type: config.status[o].type,
+          URL: config.status[o].url
+      }
+  })
+  setInterval(hourly,config.statusTime*1000)
+  }
+  hourly();
   
 });
 client.on('message', msg =>{
+  if(!msg.guild) return
   if(!server.has(msg.guild.id)){
     console.log('Initiating Server Profile creation.')
     embeds.set(msg.guild.id, {})
     server.set(msg.guild.id, {"prefix":"!"})
     console.log('Server Profile Created.')
   }
-if(msg.author.bot)
- return
-if(!msg.content.startsWith(server.get(msg.guild.id).prefix))
- return
+if(msg.author.bot) return
+if(!msg.content.startsWith(server.get(msg.guild.id).prefix)) return
  const args = msg.content.slice(server.get(msg.guild.id).prefix.length).trim().split(/\s+/g);
  const command = args.shift()
+ if(spam.get(`${msg.guild.id}${msg.member.user.id}`)){
+  var x = spam.get(`${msg.guild.id}${msg.member.user.id}`)
+  if(x['cooldown']){
+    var t = Date.now() - x['cooldown']
+    if(Math.floor(t / 1000) < config.spamtimeout){
+      x['penalty']++
+      if(x['penalty'] <= 2){
+        return msg.channel.send(`Woah, stop spamming, I can't run that fast! Gimme about ${config.spamtimeout - Math.floor(t / 1000)}s`)
+      }else if(x['penalty'] >= 3){
+        msg.delete();
+        return msg.author.send(config.penaltyMSGs[x['penalty']-3])
+      }
+    }else{
+      delete x['cooldown']
+    }
+  }else{
+    x['cooldown'] = Date.now()
+  }
+}
+if(!msg.member.hasPermission('ADMINISTRATOR')){
+  spam.set(`${msg.guild.id}${msg.member.user.id}`,{'cooldown':Date.now(),'penalty':0})
+}
 switch(command.toLowerCase()) {
     case 'ping':
       msg.channel.send('Pinging...').then(m => {
@@ -145,18 +183,13 @@ switch(command.toLowerCase()) {
             }
           }
             e.fields = field
-
-
             console.log(e)
           package.push(e)
         }
         embeds.set(`${msg.guild.id}:${name}`,package)
         }
-
       }catch(e){
         return msg.channel.send(`There's been an error: ${e}`)
-        // +f means field   +t means title   +c means colour   +< means value   +d means description   +u means url   +a means author
-        // +i means image   +b means footer   +> means second value  += means next embed
       }
     break;
     case 'clearembed':
@@ -173,6 +206,16 @@ switch(command.toLowerCase()) {
           embeds.deleteAll();
         }
       }
+    break;
+    case 'credits':
+      var k = new Discord.MessageEmbed()
+      k.addFields(
+        { name: 'Programmer', value: 'Maik#4385, \nhttps://github.com/maikeru-dev/'},
+        { name: 'Creative Man', value: '20mm#7632'})
+      k.setTitle('Credits!')
+      k.setColor('#5cd1ff')
+      k.setImage('https://cdn.discordapp.com/attachments/718128806107283557/740319884444958830/20mm_head_bruh.png')
+      msg.channel.send(k)
     break;
     case 'purge':
       if(msg.member.hasPermission('ADMINISTRATOR')){
@@ -197,50 +240,20 @@ switch(command.toLowerCase()) {
       }
     break;
     case 'poll':
-      if(spam.get(msg.member.id)){
-        var x = spam.get(msg.member.id)
-        if(x['poll']){
-          var t = (Date.now() - x['poll'])
-          if(t < 60){
-            return msg.channel.send(`You cannot poll for another ${60 - t}s`)
-          }else{
-            delete x['poll']
-          }
-        }else{
-          x['poll'] = Date.now()
-        }
-      }
-      if(!msg.member.hasPermission('ADMINISTRATOR')){
-        spam.set(msg.member.id,{'poll':Date.now()})
-      }
       var k = new Discord.MessageEmbed;
       k.setDescription(args.join(' '))
       k.setColor('#2667ff')
-      
-    
       msg.channel.send(k).then((m)=>{
-        
+        m.react('740636494078672996').then(() => 
+          m.react('740636502257696838')
+        )
+        setTimeout(() => {
+          poll.set(m.id,{'tbup':[],'tbdown':[]})
+        }, 2000);
       })
-      return poll.set(msg.id,{'up':[],'down':[]})
     break;
     default: 
       if(embeds.has(`${msg.guild.id}:${command}`)){
-        if(spam.get(msg.member.id)){
-          var x = spam.get(msg.member.id)
-          if(x['embed']){
-            var t = (Date.now() - x['embed'])
-            if(t < 60){
-              return msg.channel.send(`You cannot poll for another ${60 - t}s`)
-            }else{
-              delete x['embed']
-            }
-          }else{
-            x['embed'] = Date.now()
-          }
-        }
-        if(!msg.member.hasPermission('ADMINISTRATOR')){
-          spam.set(msg.member.id,{'embed':Date.now()})
-        }
         const package = embeds.get(`${msg.guild.id}:${command}`)
         for(var x=0;x<package.length;x++){
            var embed = new Discord.MessageEmbed;
@@ -259,11 +272,23 @@ switch(command.toLowerCase()) {
 }
 return
 });
-
 client.on("messageReactionAdd", (reaction,user) => {
-  console.log(reaction.users.reaction)
   if(poll.get(reaction.message.id)){
-    
+    var x = poll.get(reaction.message.id)
+    if(reaction._emoji.name == 'tbdown'){
+      x[reaction._emoji.name].push(user.id)
+      if(x.tbup.includes(user.id)){
+        x.tbup.splice(x.tbup.indexOf(user.id,1))
+        reaction.message.reactions.resolve('740636494078672996').users.remove(user.id)
+      }
+    }else if(reaction._emoji.name == 'tbup'){
+      x[reaction._emoji.name].push(user.id)
+      if(x.tbdown.includes(user.id)){
+        x.tbdown.splice(x.tbdown.indexOf(user.id),1)
+        reaction.message.reactions.resolve('740636502257696838').users.remove(user.id)
+      }
+    }
+    poll.set(reaction.message.id,x)
   }
 })
 client.on('guildCreate', guild => {
@@ -280,4 +305,4 @@ client.on('guildDelete', guild => {
   console.log('Server Profile Deleted.')
 })
 
-client.login(config.token);
+client.login(secret.token);
