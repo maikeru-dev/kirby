@@ -4,13 +4,13 @@
     [
         {"name":"Mongolian throat singing","type":"LISTENING"},
         {"name":"Minecraft","type":"PLAYING"},
-        {"name":"SAO","type":"STREAMING","url":"https://github.com/maikeru-dev/"},
+        {"name":"SAO","type":"WATCHING","url":"https://github.com/maikeru-dev"},
         {"name":"Taytay","type":"LISTENING"},
-        {"name":"with Retards","type":"PLAYING"},
-        {"name":"cat videos","type":"STREAMING","url":"https://github.com/maikeru-dev/"},
+        {"name":"with friends","type":"PLAYING"},
+        {"name":"cat videos","type":"WATCHING","url":"https://github.com/maikeru-dev"},
         {"name":"Kanye East","type":"LISTENING"},
         {"name":"SAO","type":"PLAYING"},
-        {"name":"gameplay","type":"STREAMING","url":"https://github.com/maikeru-dev/"},
+        {"name":"gameplay","type":"WATCHING","url":"https://github.com/maikeru-dev"},
         {"name":"rap","type":"LISTENING"},
         {"name":"with fire","type":"PLAYING"},
         {"name":"Luigi's Mansion Retro Ringtone","type":"LISTENING"},
@@ -29,7 +29,8 @@
         "this is a bad joke",
         "go away stinky",
         "you are an idiot",
-        "i hate you"
+        "i hate you",
+        "ping!"
     ]
 
 }
