@@ -1,13 +1,17 @@
 {
     "spamtimeout":"300",
+    "statusTime":"3600",
+    "pollTimeout":"120",
+    "purgeLimit":"100",
+    "serverProperties": { "prefix" : "!", "words" : [], "permission" : {"poll" : [], "purge" : [], "callcommand" : [], "echo" : [], "call" : [], "calllist" : [], "cooldownpass" : []} },
     "status":
     [
         {"name":"Mongolian throat singing","type":"LISTENING"},
         {"name":"Minecraft","type":"PLAYING"},
         {"name":"SAO","type":"WATCHING","url":"https://github.com/maikeru-dev"},
         {"name":"Taytay","type":"LISTENING"},
-        {"name":"with friends","type":"PLAYING"},
-        {"name":"cat videos","type":"WATCHING","url":"https://github.com/maikeru-dev"},
+        {"name":"with Retards","type":"PLAYING"},
+        {"name":"vore porn","type":"WATCHING","url":"https://github.com/maikeru-dev"},
         {"name":"Kanye East","type":"LISTENING"},
         {"name":"SAO","type":"PLAYING"},
         {"name":"gameplay","type":"WATCHING","url":"https://github.com/maikeru-dev"},
@@ -21,16 +25,27 @@
         {"name":"big chungus online","type":"PLAYING"},
         {"name":"Mario vs Sonic Beat Box Battle","type":"LISTENING"}
     ],
-    "statusTime":"3600",
     "penaltyMSGs":
     [
         "bruh...",
-        "stop.",
-        "this is a bad joke",
-        "go away stinky",
-        "you are an idiot",
-        "i hate you",
+        "really, nigga?",
+        "Listen here, nigger. You think this is a joke? You think you're funny? Don't spam the chat with commands again, or I'll fucking eat your ass. I'll slurp up your spinal cord and drink your bone marrow like Kool-Aid. Let that be a lesson to ya, and go fuck yourself",
+        "Ok, I see how it is.",
+        "Alright, you obviously have too much free time on your hands.",
+        "You're a perfect example of what no pussy does to a nigga.",
+        "You know, I really can't stand you, nigga. sits down",
+        "Fuck, dude. Please shut the fuck up.",
+        "shut up, meg",
+        "Retard spamming chat does not compute, commence child rape.",
+        "Chat has been spammed. Initiate Protocol 3947: Child Rape",
+        "Protocol 3: Protect the pilot",
+        "he died btw",
+        "bro...dude...not cool...",
+        "just stop. you're already gay",
+        "ok, so basically, am monkey",
+        "Super...super...super...",
         "ping!"
+
     ]
 
 }

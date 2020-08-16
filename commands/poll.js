@@ -1,9 +1,20 @@
 const { server, call, poll } = require('../db.js')
+const config = require('../config.json')
 const Discord = require('discord.js')
+const { checkPerm } = require('./config.js')
 module.exports = {
 	name: 'poll',
 	description: 'Poll command, creates a poll!',
 	execute(msg, args) {
+    if(checkPerm(msg, 'poll')) {
+	/*if((Math.floor(Math.random() * 3) ==  2)){
+        return msg.channel.send(`Oops! You're black! Jim Crow states you cannot create a poll, so try again!`)
+    }*/
+  
+    if(args.length < 2) return msg.channel.send('Warn: Argument count must be greater or equal to 2!')
+    if(isNaN(parseInt(args[0]))) return msg.channel.send('Warn: Timeout argument is not a valid number!')
+    var time = parseInt(args.shift(), 10)
+    if(time > config.pollTimeout || time < 20) return msg.channel.send(`Warn: Timeout argument is greater than config allows or less than 20s, Maximum timeout: ${config.pollTimeout}s!`)
     var k = new Discord.MessageEmbed()
      k.setDescription(args.join(' '))
      k.setColor('#2667ff')
@@ -14,6 +25,13 @@ module.exports = {
        setTimeout(() => {
          poll.set(m.id, { 'tbup': [], 'tbdown': [] })
        }, 2000);
+       setTimeout(() => {
+         var p = poll.get(m.id)
+         k.setDescription('```Vote is over! Winning vote is ' + `${p.tbup.length >= p.tbdown.length ? 'Agree' : 'Disagree'}! \nTotal Votes: ${p.tbdown.length + p.tbup.length}, Winning vote won by ${p.tbup.length >= p.tbdown.length ? p.tbup.length - p.tbdown.length : p.tbdown.length - p.tbup.length}` + '```')
+         m.edit(k)
+       }, time*1000);
      })
+    }else msg.channel.send('Warn: Missing Permission')
+    
 	},
 };

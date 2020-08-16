@@ -9,11 +9,7 @@ module.exports = {
   server: new Enmap({
     name: "server",
     autoFetch: true,
-    fetchAll: false
+    fetchAll: true
   }),
-  poll: new Enmap({
-    name: "poll",
-    autoFetch: true,
-    fetchAll: false
-  })
+  poll: new Map
 }
