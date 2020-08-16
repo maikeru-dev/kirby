@@ -7,10 +7,6 @@ module.exports = {
 	description: 'Poll command, creates a poll!',
 	execute(msg, args) {
     if(checkPerm(msg, 'poll')) {
-	/*if((Math.floor(Math.random() * 3) ==  2)){
-        return msg.channel.send(`Oops! You're black! Jim Crow states you cannot create a poll, so try again!`)
-    }*/
-  
     if(args.length < 2) return msg.channel.send('Warn: Argument count must be greater or equal to 2!')
     if(isNaN(parseInt(args[0]))) return msg.channel.send('Warn: Timeout argument is not a valid number!')
     var time = parseInt(args.shift(), 10)
