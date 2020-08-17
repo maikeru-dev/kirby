@@ -128,4 +128,4 @@ client.on('guildDelete', guild => {
   server.delete(guild.id)
 })
 
-client.login(secret);
+client.login(secret || process.env.secret);
